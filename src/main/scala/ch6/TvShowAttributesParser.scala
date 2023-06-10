@@ -14,7 +14,7 @@ class TvShowAttributesParser {
     for {
       yearStr <- if (bracketOpen != -1 && dash > bracketOpen + 1)
         Right(rawShow.substring(bracketOpen + 1, dash))
-      else Left(s"Can't extarct start year from $rawShow")
+      else Left(s"Can't extract start year from $rawShow")
       year <- yearStr.toIntOption.toRight(s"Can't parse $yearStr")
     } yield year
   }
