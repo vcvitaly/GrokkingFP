@@ -1,6 +1,8 @@
 package io.github.vcvitaly.grokkingfp
 package ch7
 
+import ch7.model.{Artist, Genre, Location, YearsActiveEnd, YearsActiveStart}
+
 /**
  * ArtistSearchEngine.
  *
@@ -24,17 +26,20 @@ class ArtistSearchEngine {
       )
   }
 
-  private def filterByGenres(genre: String, expectedGenres: List[String]): Boolean = {
-    expectedGenres.isEmpty || expectedGenres.contains(genre)
+  private def filterByGenres(genre: Genre, expectedGenres: List[String]): Boolean = {
+    expectedGenres.isEmpty || expectedGenres.contains(genre.name)
   }
 
-  private def filterByLocations(location: String, expectedLocations: List[String]): Boolean = {
-    expectedLocations.isEmpty || expectedLocations.contains(location)
+  private def filterByLocations(location: Location, expectedLocations: List[String]): Boolean = {
+    expectedLocations.isEmpty || expectedLocations.contains(location.name)
   }
 
-  private def filterByYearsActive(yearsActiveStart: Int, yearsActiveEnd: Int, activeAfter: Int, activeBefore: Int): Boolean = {
-    (activeAfter <= yearsActiveStart && activeBefore >= yearsActiveStart) ||
-      (activeAfter >= yearsActiveStart && (activeBefore <= yearsActiveEnd || yearsActiveEnd == 0)) ||
-      (activeAfter <= yearsActiveEnd && activeBefore >= yearsActiveEnd)
+  private def filterByYearsActive(yearsActiveStart: YearsActiveStart,
+                                  yearsActiveEnd: YearsActiveEnd,
+                                  activeAfter: Int,
+                                  activeBefore: Int): Boolean = {
+    (activeAfter <= yearsActiveStart.value && activeBefore >= yearsActiveStart.value) ||
+      (activeAfter >= yearsActiveStart.value && (activeBefore <= yearsActiveEnd.value || yearsActiveEnd.value == 0)) ||
+      (activeAfter <= yearsActiveEnd.value && activeBefore >= yearsActiveEnd.value)
   }
 }
