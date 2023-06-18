@@ -18,6 +18,7 @@ object model {
     case SearchByGenre(genres: List[MusicGenre])
     case SearchByOrigin(locations: List[Location])
     case SearchByActiveYears(start: Int, end: Int)
+    case SearchByNumberOfActiveYears(numberOfYearsActive: Int, currentYear: Int)
   }
 
   opaque type Location = String

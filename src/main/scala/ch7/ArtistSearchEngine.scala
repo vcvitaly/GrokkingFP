@@ -1,17 +1,16 @@
 package io.github.vcvitaly.grokkingfp
 package ch7
 
+import ch7.model.SearchCondition.{SearchByActiveYears, SearchByGenre, SearchByNumberOfActiveYears, SearchByOrigin}
+import ch7.model.YearsActive.{ActiveBetween, StillActive}
 import ch7.model.{Artist, Location, MusicGenre, SearchCondition, YearsActive}
-
-import io.github.vcvitaly.grokkingfp.ch7.model.SearchCondition.{SearchByActiveYears, SearchByGenre, SearchByOrigin}
-import io.github.vcvitaly.grokkingfp.ch7.model.YearsActive.{ActiveBetween, StillActive}
 
 /**
  * ArtistSearchEngine.
  *
  * @author Vitalii Chura
  */
-class ArtistSearchEngine {
+class ArtistSearchEngine(activeYearsCalculator: ActiveYearsCalculator) {
 
   def searchArtists(
                      artists: List[Artist],
@@ -23,6 +22,8 @@ class ArtistSearchEngine {
           case SearchByGenre(genres) => genres.contains(artist.genre)
           case SearchByOrigin(locations) => locations.contains(artist.origin)
           case SearchByActiveYears(start, end) => wasArtistActive(artist, start, end)
+          case SearchByNumberOfActiveYears(numberOfYearsActive, currentYear) =>
+            activeYearsCalculator.numberOfYearsActive(artist.yearsActive, currentYear) >= numberOfYearsActive
       ))
   }
 
@@ -39,8 +40,6 @@ class ArtistSearchEngine {
       (activeAfter >= yearsActiveStart && (activeBefore <= yearsActiveEnd || yearsActiveEnd == 0)) ||
       (activeAfter <= yearsActiveEnd && activeBefore >= yearsActiveEnd)
   }
-
-
 }
 
 /*(activeAfter <= yearsActiveStart.value && activeBefore >= yearsActiveStart.value) ||

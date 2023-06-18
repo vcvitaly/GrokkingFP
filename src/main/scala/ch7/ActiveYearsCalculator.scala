@@ -11,8 +11,8 @@ import ch7.model.{Artist, YearsActive}
  */
 class ActiveYearsCalculator {
 
-  def numberOfYearsActive(artist: Artist, currentYear: Int): Int = {
-    artist.yearsActive
+  def numberOfYearsActive(yearsActive: List[YearsActive], currentYear: Int): Int = {
+    yearsActive
       .map(period => numberOfYearsActiveInASinglePeriod(period, currentYear))
       .sum
   }
