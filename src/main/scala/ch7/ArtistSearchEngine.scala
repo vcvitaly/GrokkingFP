@@ -25,9 +25,13 @@ class ArtistSearchEngine {
           case SearchByActiveYears(start, end) => wasArtistActive(artist, start, end)
       ))
   }
-  
+
   private def wasArtistActive(artist: model.Artist, activeAfter: Int, activeBefore: Int): Boolean = {
-    val (yearsActiveStart, yearsActiveEnd) = artist.yearsActive match
+    artist.yearsActive.exists(period => wasArtistActiveDuringAPeriod(period, activeAfter, activeBefore))
+  }
+
+  private def wasArtistActiveDuringAPeriod(period: YearsActive, activeAfter: Int, activeBefore: Int): Boolean = {
+    val (yearsActiveStart, yearsActiveEnd) = period match
       case StillActive(since) => (since, 0)
       case ActiveBetween(start, end) => (start, end)
 
@@ -35,6 +39,8 @@ class ArtistSearchEngine {
       (activeAfter >= yearsActiveStart && (activeBefore <= yearsActiveEnd || yearsActiveEnd == 0)) ||
       (activeAfter <= yearsActiveEnd && activeBefore >= yearsActiveEnd)
   }
+
+
 }
 
 /*(activeAfter <= yearsActiveStart.value && activeBefore >= yearsActiveStart.value) ||

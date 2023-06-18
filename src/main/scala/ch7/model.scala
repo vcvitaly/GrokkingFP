@@ -35,6 +35,6 @@ object model {
                      name: String,
                      genre: MusicGenre,
                      origin: Location,
-                     yearsActive: YearsActive
+                     yearsActive: List[YearsActive]
                    )
 }

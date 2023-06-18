@@ -22,9 +22,9 @@ class ActiveYearsCalculatorTest extends AnyFlatSpec with should.Matchers with Sc
   "The numberOfYearsActive" should "calculate correctly the number of artist's active years" in {
     val params = Table(
       ("artist", "currentYear", "numberOfYearsActive"),
-      (Artist("Metallica", HeavyMetal, Location("U.S."), StillActive(1981)), 2022, 41),
-      (Artist("Led Zeppelin", HardRock, Location("England"), ActiveBetween(1968, 1980)), 2022, 12),
-      (Artist("Bee Gees", Pop, Location("England"), ActiveBetween(1958, 2003)), 2022, 45),
+      (Artist("Metallica", HeavyMetal, Location("U.S."), List(StillActive(1981))), 2022, 41),
+      (Artist("Led Zeppelin", HardRock, Location("England"), List(ActiveBetween(1968, 1980))), 2022, 12),
+      (Artist("Bee Gees", Pop, Location("England"), List(ActiveBetween(1958, 2003), ActiveBetween(2009, 2012))), 2022, 48),
     )
 
     forAll(params) { (artist, currentYear, numberOfYearsActive) =>
