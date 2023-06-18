@@ -14,6 +14,12 @@ object model {
     case HardRock
   }
 
+  enum SearchCondition {
+    case SearchByGenre(genres: List[MusicGenre])
+    case SearchByOrigin(locations: List[Location])
+    case SearchByActiveYears(start: Int, end: Int)
+  }
+
   opaque type Location = String
   object Location {
     def apply(value: String): Location = value

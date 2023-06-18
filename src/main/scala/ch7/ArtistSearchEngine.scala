@@ -1,8 +1,9 @@
 package io.github.vcvitaly.grokkingfp
 package ch7
 
-import ch7.model.{Artist, Location, MusicGenre, YearsActive}
+import ch7.model.{Artist, Location, MusicGenre, SearchCondition, YearsActive}
 
+import io.github.vcvitaly.grokkingfp.ch7.model.SearchCondition.{SearchByActiveYears, SearchByGenre, SearchByOrigin}
 import io.github.vcvitaly.grokkingfp.ch7.model.YearsActive.{ActiveBetween, StillActive}
 
 /**
@@ -14,34 +15,25 @@ class ArtistSearchEngine {
 
   def searchArtists(
                      artists: List[Artist],
-                     genres: List[MusicGenre],
-                     locations: List[String],
-                     searchByActiveYears: Boolean,
-                     activeAfter: Int,
-                     activeBefore: Int
+                     requiredConditions: List[SearchCondition]
                    ): List[Artist] = {
     artists
-      .view
-      .filter(a => filterByGenres(a.genre, genres))
-      .filter(a => filterByLocations(a.origin, locations))
-      .filter(a => !searchByActiveYears || filterByYearsActive(a.yearsActive, activeAfter, activeBefore))
-      .to(List)
+      .filter(artist => requiredConditions.forall(condition =>
+        condition match
+          case SearchByGenre(genres) => genres.contains(artist.genre)
+          case SearchByOrigin(locations) => locations.contains(artist.origin)
+          case SearchByActiveYears(start, end) => wasArtistActive(artist, start, end)
+      ))
   }
+  
+  private def wasArtistActive(artist: model.Artist, activeAfter: Int, activeBefore: Int): Boolean = {
+    val (yearsActiveStart, yearsActiveEnd) = artist.yearsActive match
+      case StillActive(since) => (since, 0)
+      case ActiveBetween(start, end) => (start, end)
 
-  private def filterByGenres(genre: MusicGenre, expectedGenres: List[MusicGenre]): Boolean = {
-    expectedGenres.isEmpty || expectedGenres.contains(genre)
-  }
-
-  private def filterByLocations(location: Location, expectedLocations: List[String]): Boolean = {
-    expectedLocations.isEmpty || expectedLocations.contains(location.name)
-  }
-
-  private def filterByYearsActive(yearsActive: YearsActive,
-                                  activeAfter: Int,
-                                  activeBefore: Int): Boolean = {
-    yearsActive match
-      case StillActive(since) => since <= activeBefore
-      case ActiveBetween(start, end) => start <= activeAfter && end >= activeBefore
+    (activeAfter <= yearsActiveStart && activeBefore >= yearsActiveStart) ||
+      (activeAfter >= yearsActiveStart && (activeBefore <= yearsActiveEnd || yearsActiveEnd == 0)) ||
+      (activeAfter <= yearsActiveEnd && activeBefore >= yearsActiveEnd)
   }
 }
 
